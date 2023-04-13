@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { RootState } from "./redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRepos } from "./redux/slices/githubReposSlice";
+import { SearchBar } from "./components/SearchBar/SearchBar";
 
 function App() {
+  const currentState = useSelector((state: RootState) => state.repos);
+  const dispatch = useDispatch();
+
+  console.log(currentState);
+
+  const handleFetchRepos = () => {
+    dispatch(fetchRepos());
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchBar />
+      <button onClick={handleFetchRepos}>Загрузить репозитории</button>
+      {currentState.loading && <div>Загрузка...</div>}
+      {currentState.error && <div>{currentState.error}</div>}
+      {currentState.repos.map((repo) => (
+        <div key={repo.id}>{repo.name}</div>
+      ))}
     </div>
   );
 }
