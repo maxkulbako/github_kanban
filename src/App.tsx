@@ -4,6 +4,7 @@ import { RootState } from "./redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRepos } from "./redux/slices/githubReposSlice";
 import { SearchBar } from "./components/SearchBar/SearchBar";
+import { IssueItem } from "./components/Content/IssueItem";
 
 function App() {
   const currentState = useSelector((state: RootState) => state.repos);
@@ -22,7 +23,13 @@ function App() {
       {currentState.loading && <div>Загрузка...</div>}
       {currentState.error && <div>{currentState.error}</div>}
       {currentState.repos.map((repo) => (
-        <div key={repo.id}>{repo.name}</div>
+        <IssueItem
+          number={repo.number}
+          key={repo.id}
+          title={repo.title}
+          user={repo.user}
+          comments={repo.comments}
+        />
       ))}
     </div>
   );

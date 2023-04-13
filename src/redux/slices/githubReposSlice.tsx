@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { AppDispatch, RootState } from "../store"; // импортируем типы стора
+import { AppDispatch } from "../store"; // импортируем типы стора
 
 export interface Repo {
-  id: number;
-  name: string;
-  html_url: string;
+  id?: number;
+  key?: number;
+  title: string;
+  number: number;
+  user: { login: string };
+  comments: number;
 }
 
 export interface ReposState {
@@ -40,7 +43,7 @@ export const reposSlice = createSlice({
 });
 
 export const fetchRepos: any = () => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+  return async (dispatch: AppDispatch) => {
     dispatch(reposSlice.actions.setLoading());
 
     try {
