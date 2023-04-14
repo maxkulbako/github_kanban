@@ -1,19 +1,12 @@
 import { Repo } from "../../redux/slices/githubReposSlice";
+import { Card } from "antd";
+
 export const IssueItem = ({ title, number, user, comments }: Repo) => {
   return (
-    <div>
-      <p>{title}</p>
+    <Card size="small" title={title} bordered={false} style={{ width: 230 }}>
       <p>{number}</p>
       <p>{user.login}</p>
       <p>{comments}</p>
-    </div>
+    </Card>
   );
 };
-
-// export interface Issue {
-//   key?: number;
-//   title: string;
-//   number: number;
-//   user: { login: string };
-//   comments: number;
-// }

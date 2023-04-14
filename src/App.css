@@ -2,3 +2,31 @@
   margin: 30px auto;
   width: 800px;
 }
+
+.issues_container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo_container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: rgb(198, 193, 193);
+  padding: 10px;
+  width: fit-content;
+  border-radius: 10px;
+}
+
+.issues_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.issues_wrapper > span {
+  font-weight: 600;
+  width: fit-content;
+}

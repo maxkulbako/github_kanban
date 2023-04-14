@@ -2,21 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AppDispatch } from "../store"; // импортируем типы стора
 
-export interface Repo {
-  id?: number;
-  key?: number;
-  title: string;
-  number: number;
-  user: { login: string };
-  comments: number;
-}
-
-export interface ReposState {
-  repos: Repo[];
-  loading: boolean;
-  error: string | null;
-}
-
 const initialState: ReposState = {
   repos: [],
   loading: false,
@@ -57,6 +42,21 @@ export const fetchRepos: any = () => {
     }
   };
 };
+
+export interface Repo {
+  id?: number;
+  key?: number;
+  title: string;
+  number: number;
+  user: { login: string };
+  comments: number;
+}
+
+export interface ReposState {
+  repos: Repo[];
+  loading: boolean;
+  error: string | null;
+}
 
 export const { setLoading, setRepos, setError } = reposSlice.actions;
 
