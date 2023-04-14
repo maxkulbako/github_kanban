@@ -8,7 +8,7 @@ export const SearchBar = ({ onSearch }: IProps) => {
       placeholder="input search text"
       onSearch={(value: string) => {
         const regex = /(?<=github\.com\/)\S+/;
-        let searchParams: string | null = null;
+        let searchParams: string = "";
         const matches = value.match(regex);
         if (matches && matches.length > 0) {
           searchParams = matches[0];
@@ -21,5 +21,5 @@ export const SearchBar = ({ onSearch }: IProps) => {
 };
 
 interface IProps {
-  onSearch: (repo: string | null) => void;
+  onSearch: (repo: string) => void;
 }

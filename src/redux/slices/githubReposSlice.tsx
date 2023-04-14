@@ -1,48 +1,44 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { AppDispatch } from "../store"; // импортируем типы стора
 
 const initialState: ReposState = {
   repos: [],
-  loading: false,
-  error: null,
+  status: null,
 };
+
+export const fetchIssues = createAsyncThunk(
+  "issues/fetchIssuesStatus",
+  async (repo: string) => {
+    const { data } = await axios.get<Repo[]>(
+      `https://api.github.com/repos/${repo}/issues`
+    );
+    return data;
+  }
+);
 
 export const reposSlice = createSlice({
   name: "repos",
   initialState,
   reducers: {
-    setLoading: (state) => {
-      state.loading = true;
-    },
     setRepos: (state, action: PayloadAction<Repo[]>) => {
       state.repos = action.payload;
-      state.loading = false;
-      state.error = null;
-    },
-    setError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
-      state.loading = false;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchIssues.pending, (state) => {
+      state.status = "loading";
+      state.repos = [];
+    });
+    builder.addCase(fetchIssues.fulfilled, (state, { payload }) => {
+      state.repos = payload;
+      state.status = "success";
+    });
+    builder.addCase(fetchIssues.rejected, (state) => {
+      state.status = "error";
+      state.repos = [];
+    });
+  },
 });
-
-export const fetchRepos: any = (repo: string) => {
-  return async (dispatch: AppDispatch) => {
-    dispatch(reposSlice.actions.setLoading());
-
-    try {
-      const response = await axios.get<Repo[]>(
-        `https://api.github.com/repos/${repo}/issues`
-      );
-      const repos = response.data;
-      dispatch(reposSlice.actions.setRepos(repos));
-    } catch (error: any) {
-      dispatch(reposSlice.actions.setRepos([]));
-      dispatch(reposSlice.actions.setError(error.message));
-    }
-  };
-};
 
 export interface Repo {
   id?: number;
@@ -55,10 +51,7 @@ export interface Repo {
 
 export interface ReposState {
   repos: Repo[];
-  loading: boolean;
-  error: string | null;
+  status: null | string;
 }
-
-export const { setLoading, setRepos, setError } = reposSlice.actions;
 
 export default reposSlice.reducer;
