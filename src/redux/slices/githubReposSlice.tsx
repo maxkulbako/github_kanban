@@ -27,17 +27,18 @@ export const reposSlice = createSlice({
   },
 });
 
-export const fetchRepos: any = () => {
+export const fetchRepos: any = (repo: string) => {
   return async (dispatch: AppDispatch) => {
     dispatch(reposSlice.actions.setLoading());
 
     try {
       const response = await axios.get<Repo[]>(
-        "https://api.github.com/repos/facebook/react/issues"
+        `https://api.github.com/repos/${repo}/issues`
       );
       const repos = response.data;
       dispatch(reposSlice.actions.setRepos(repos));
     } catch (error: any) {
+      dispatch(reposSlice.actions.setRepos([]));
       dispatch(reposSlice.actions.setError(error.message));
     }
   };

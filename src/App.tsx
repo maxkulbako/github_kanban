@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchRepos } from "./redux/slices/githubReposSlice";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { IssuesList } from "./components/Content/IssuesList";
-import { current } from "@reduxjs/toolkit";
 
 function App() {
   const currentState = useSelector((state: RootState) => state.repos);
@@ -13,14 +12,13 @@ function App() {
 
   console.log(currentState);
 
-  const handleFetchRepos = () => {
-    dispatch(fetchRepos());
+  const handleFetchRepos = (repo: string | null) => {
+    dispatch(fetchRepos(repo));
   };
 
   return (
     <div className="App">
-      <SearchBar />
-      <button onClick={handleFetchRepos}>Загрузить репозитории</button>
+      <SearchBar onSearch={handleFetchRepos} />
       {currentState.loading && <div>Загрузка...</div>}
       {currentState.error && <div>{currentState.error}</div>}
       {currentState.repos.length > 0 && (
