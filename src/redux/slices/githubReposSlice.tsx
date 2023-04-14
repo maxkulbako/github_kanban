@@ -1,57 +1,101 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const initialState: ReposState = {
-  repos: [],
+const initialState: IssuesState = {
+  issues: {},
+  todoIds: [],
+  inProgressIds: [],
+  doneIds: [],
   status: null,
 };
 
 export const fetchIssues = createAsyncThunk(
   "issues/fetchIssuesStatus",
   async (repo: string) => {
-    const { data } = await axios.get<Repo[]>(
+    const { data } = await axios.get<Issue[]>(
       `https://api.github.com/repos/${repo}/issues`
     );
-    return data;
+    const issues = data.reduce((acc, issue) => {
+      if (issue.id) {
+        acc[issue.id] = issue;
+      }
+      return acc;
+    }, {} as IssueMap);
+    return issues;
   }
 );
 
-export const reposSlice = createSlice({
+export const issuesSlice = createSlice({
   name: "repos",
   initialState,
   reducers: {
-    setRepos: (state, action: PayloadAction<Repo[]>) => {
-      state.repos = action.payload;
+    setTodoIds: (state, action: PayloadAction<number[]>) => {
+      state.todoIds = action.payload;
+    },
+    setInProgressIds: (state, action: PayloadAction<number[]>) => {
+      state.inProgressIds = action.payload;
+    },
+    setDoneIds: (state, action: PayloadAction<number[]>) => {
+      state.doneIds = action.payload;
+    },
+    moveIssue: (
+      state,
+      action: PayloadAction<{
+        from: number;
+        to: number;
+        sourceColumn: "todoIds" | "inProgressIds" | "doneIds";
+        destColumn: "todoIds" | "inProgressIds" | "doneIds";
+      }>
+    ) => {
+      const { from, to, sourceColumn, destColumn } = action.payload;
+      const sourceIds = state[sourceColumn];
+      const destIds = state[destColumn];
+      const [removed] = sourceIds.splice(from, 1);
+      destIds.splice(to, 0, removed);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIssues.pending, (state) => {
       state.status = "loading";
-      state.repos = [];
+      state.issues = {};
     });
     builder.addCase(fetchIssues.fulfilled, (state, { payload }) => {
-      state.repos = payload;
+      state.issues = payload;
+      state.todoIds = Object.keys(payload).map(Number);
+      state.inProgressIds = [];
+      state.doneIds = [];
       state.status = "success";
     });
     builder.addCase(fetchIssues.rejected, (state) => {
       state.status = "error";
-      state.repos = [];
+      state.issues = {};
+      state.todoIds = [];
+      state.inProgressIds = [];
+      state.doneIds = [];
     });
   },
 });
 
-export interface Repo {
+export interface Issue {
   id?: number;
-  key?: number;
   title: string;
   number: number;
   user: { login: string };
   comments: number;
 }
 
-export interface ReposState {
-  repos: Repo[];
+interface IssueMap {
+  [key: number]: Issue;
+}
+
+interface IssuesState {
+  issues: IssueMap;
+  todoIds: number[];
+  inProgressIds: number[];
+  doneIds: number[];
   status: null | string;
 }
 
-export default reposSlice.reducer;
+export const { moveIssue } = issuesSlice.actions;
+
+export default issuesSlice.reducer;
