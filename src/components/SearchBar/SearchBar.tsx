@@ -3,12 +3,15 @@ import {
   setSearchParams,
   getFromLocalStorage,
 } from "../../redux/slices/issuesSlice";
+
+import { fetchIssues } from "../../redux/slices/issuesSlice";
+import { fetchRepo } from "../../redux/slices/repoSlice";
 import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 
 const { Search } = Input;
 
-export const SearchBar = ({ onSearch, getRepo }: IProps) => {
+export const SearchBar = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSearch = (value: string) => {
@@ -20,13 +23,14 @@ export const SearchBar = ({ onSearch, getRepo }: IProps) => {
       searchParams = matches[0];
     }
 
-    getRepo(searchParams);
+    dispatch(fetchRepo(searchParams));
 
     if (localStorage.getItem(value)) {
       dispatch(setSearchParams(value));
       dispatch(getFromLocalStorage(value));
     } else {
-      onSearch(searchParams);
+      console.log("fetch");
+      dispatch(fetchIssues(searchParams));
       dispatch(setSearchParams(value));
     }
   };
@@ -35,8 +39,3 @@ export const SearchBar = ({ onSearch, getRepo }: IProps) => {
     <Search placeholder="Enter repo URL" onSearch={handleSearch} enterButton />
   );
 };
-
-interface IProps {
-  onSearch: (repo: string) => void;
-  getRepo: (repo: string) => void;
-}

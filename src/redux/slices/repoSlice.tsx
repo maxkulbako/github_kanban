@@ -14,7 +14,6 @@ export const fetchRepo = createAsyncThunk(
     const { data } = await axios.get<RepoData>(
       `https://api.github.com/repos/${repo}`
     );
-    console.log(data);
     return data;
   }
 );
