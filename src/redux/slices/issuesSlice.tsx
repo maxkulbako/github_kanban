@@ -11,7 +11,7 @@ const initialState: IssuesState = {
 };
 
 export const fetchIssues = createAsyncThunk(
-  "issues/fetchIssuesStatus",
+  "issues/fetchIssues",
   async (repo: string) => {
     const { data } = await axios.get<Issue[]>(
       `https://api.github.com/repos/${repo}/issues`
@@ -31,20 +31,11 @@ function saveStateToLocalStorage(state: IssuesState) {
 }
 
 export const issuesSlice = createSlice({
-  name: "repos",
+  name: "issues",
   initialState,
   reducers: {
     setSearchParams: (state, action: PayloadAction<string>) => {
       state.repoURL = action.payload;
-    },
-    setTodoIds: (state, action: PayloadAction<number[]>) => {
-      state.todoIds = action.payload;
-    },
-    setInProgressIds: (state, action: PayloadAction<number[]>) => {
-      state.inProgressIds = action.payload;
-    },
-    setDoneIds: (state, action: PayloadAction<number[]>) => {
-      state.doneIds = action.payload;
     },
     getFromLocalStorage: (state, action: PayloadAction<string>) => {
       const localState = localStorage.getItem(action.payload);
@@ -84,11 +75,15 @@ export const issuesSlice = createSlice({
       state.issues = {};
     });
     builder.addCase(fetchIssues.fulfilled, (state, { payload }) => {
-      state.issues = payload;
-      state.todoIds = Object.keys(payload).map(Number);
-      state.inProgressIds = [];
-      state.doneIds = [];
-      state.status = "success";
+      if (Object.keys(payload).length > 0) {
+        state.issues = payload;
+        state.todoIds = Object.keys(payload).map(Number);
+        state.inProgressIds = [];
+        state.doneIds = [];
+        state.status = "success";
+      } else {
+        state.status = "empty";
+      }
     });
     builder.addCase(fetchIssues.rejected, (state) => {
       state.status = "error";

@@ -1,5 +1,5 @@
 import { IssueItem } from "./IssueItem";
-import { Issue } from "../../redux/slices/githubReposSlice";
+import { Issue } from "../../redux/slices/issuesSlice";
 import { Droppable, Draggable, DroppableProvided } from "react-beautiful-dnd";
 
 export const IssuesList = ({ issues, title, droppable }: Props) => {

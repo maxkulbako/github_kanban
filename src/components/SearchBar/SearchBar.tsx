@@ -2,13 +2,13 @@ import { Input } from "antd";
 import {
   setSearchParams,
   getFromLocalStorage,
-} from "../../redux/slices/githubReposSlice";
+} from "../../redux/slices/issuesSlice";
 import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 
 const { Search } = Input;
 
-export const SearchBar = ({ onSearch }: IProps) => {
+export const SearchBar = ({ onSearch, getRepo }: IProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSearch = (value: string) => {
@@ -19,6 +19,8 @@ export const SearchBar = ({ onSearch }: IProps) => {
     if (matches && matches.length > 0) {
       searchParams = matches[0];
     }
+
+    getRepo(searchParams);
 
     if (localStorage.getItem(value)) {
       dispatch(setSearchParams(value));
@@ -36,4 +38,5 @@ export const SearchBar = ({ onSearch }: IProps) => {
 
 interface IProps {
   onSearch: (repo: string) => void;
+  getRepo: (repo: string) => void;
 }

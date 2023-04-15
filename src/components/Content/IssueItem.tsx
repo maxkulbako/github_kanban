@@ -1,4 +1,4 @@
-import { Issue } from "../../redux/slices/githubReposSlice";
+import { Issue } from "../../redux/slices/issuesSlice";
 import { Card } from "antd";
 
 export const IssueItem = ({ title, number, user, comments }: Issue) => {

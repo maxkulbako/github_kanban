@@ -1,8 +1,9 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./App.css";
 import { RootState } from "./redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchIssues, moveIssue } from "./redux/slices/githubReposSlice";
+import { fetchIssues, moveIssue } from "./redux/slices/issuesSlice";
+import { fetchRepo } from "./redux/slices/repoSlice";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { IssuesList } from "./components/Content/IssuesList";
 import { AppDispatch } from "./redux/store";
@@ -15,6 +16,9 @@ import {
 function App() {
   const { issues, status, todoIds, inProgressIds, doneIds } = useSelector(
     (state: RootState) => state.issues
+  );
+  const { repoURL, name, stars, statusRepo } = useSelector(
+    (state: RootState) => state.repo
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -50,15 +54,26 @@ function App() {
     }
   }, []);
 
-  const handleFetchRepos = (repo: string) => {
+  const handleFetchIssues = (repo: string) => {
     dispatch(fetchIssues(repo));
+  };
+
+  const handleFetchRepo = (repo: string) => {
+    dispatch(fetchRepo(repo));
   };
 
   return (
     <div className="App">
-      <SearchBar onSearch={handleFetchRepos} />
-      {status === "loading" && <div>Загрузка...</div>}
+      <SearchBar onSearch={handleFetchIssues} getRepo={handleFetchRepo} />
+      {statusRepo === "success" && (
+        <div>
+          <a href={repoURL}>{name}</a>
+          <p>{stars}</p>
+        </div>
+      )}
+      {status && statusRepo === "loading" && <div>Загрузка...</div>}
       {status === "error" && <div>Try again</div>}
+      {status === "empty" && <div>No issues</div>}
       {Object.keys(issues).length > 0 && (
         <div className="issues_container">
           <DragDropContext onDragEnd={onDragEnd}>
