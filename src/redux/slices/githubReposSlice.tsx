@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState: IssuesState = {
+  repoURL: null,
   issues: {},
   todoIds: [],
   inProgressIds: [],
@@ -25,10 +26,17 @@ export const fetchIssues = createAsyncThunk(
   }
 );
 
+function saveStateToLocalStorage(state: IssuesState) {
+  localStorage.setItem(`${state.repoURL}`, JSON.stringify(state));
+}
+
 export const issuesSlice = createSlice({
   name: "repos",
   initialState,
   reducers: {
+    setSearchParams: (state, action: PayloadAction<string>) => {
+      state.repoURL = action.payload;
+    },
     setTodoIds: (state, action: PayloadAction<number[]>) => {
       state.todoIds = action.payload;
     },
@@ -38,6 +46,20 @@ export const issuesSlice = createSlice({
     setDoneIds: (state, action: PayloadAction<number[]>) => {
       state.doneIds = action.payload;
     },
+    getFromLocalStorage: (state, action: PayloadAction<string>) => {
+      const localState = localStorage.getItem(action.payload);
+
+      if (localState) {
+        const parsedState = JSON.parse(localState);
+        state.issues = parsedState.issues;
+        state.todoIds = parsedState.todoIds;
+        state.inProgressIds = parsedState.inProgressIds;
+        state.doneIds = parsedState.doneIds;
+        state.status = parsedState.status;
+        console.log(state);
+      }
+    },
+
     moveIssue: (
       state,
       action: PayloadAction<{
@@ -52,6 +74,8 @@ export const issuesSlice = createSlice({
       const destIds = state[destColumn];
       const [removed] = sourceIds.splice(from, 1);
       destIds.splice(to, 0, removed);
+
+      saveStateToLocalStorage(state);
     },
   },
   extraReducers: (builder) => {
@@ -89,6 +113,7 @@ interface IssueMap {
 }
 
 interface IssuesState {
+  repoURL: null | string;
   issues: IssueMap;
   todoIds: number[];
   inProgressIds: number[];
@@ -96,6 +121,7 @@ interface IssuesState {
   status: null | string;
 }
 
-export const { moveIssue } = issuesSlice.actions;
+export const { moveIssue, setSearchParams, getFromLocalStorage } =
+  issuesSlice.actions;
 
 export default issuesSlice.reducer;
