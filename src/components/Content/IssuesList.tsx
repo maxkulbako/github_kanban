@@ -31,6 +31,7 @@ export const IssuesList = ({ issues, title, droppable }: Props) => {
                         title={repo.title}
                         user={repo.user}
                         comments={repo.comments}
+                        created_at={repo.created_at}
                       />
                     </div>
                   )}

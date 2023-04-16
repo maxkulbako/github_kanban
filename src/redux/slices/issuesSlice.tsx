@@ -101,6 +101,7 @@ export interface Issue {
   number: number;
   user: { login: string };
   comments: number;
+  created_at: string;
 }
 
 interface IssueMap {

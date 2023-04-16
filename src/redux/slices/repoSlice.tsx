@@ -31,6 +31,7 @@ export const repoSlice = createSlice({
     builder.addCase(fetchRepo.fulfilled, (state, { payload }) => {
       state.name = payload.full_name;
       state.repoURL = payload.html_url;
+      state.ownerURL = payload.owner.html_url;
       state.stars = payload.stargazers_count;
       state.statusRepo = "success";
     });
@@ -55,6 +56,7 @@ interface RepoData {
   html_url: string;
   full_name: string;
   stargazers_count: number;
+  owner: { html_url: string };
 }
 
 export default repoSlice.reducer;
