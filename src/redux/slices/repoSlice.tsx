@@ -3,7 +3,7 @@ import axios from "axios";
 
 const initialState: repoState = {
   repoURL: undefined,
-  name: null,
+  name: "",
   stars: null,
   statusRepo: null,
 };
@@ -37,13 +37,13 @@ export const repoSlice = createSlice({
       state.statusRepo = "error";
       state.repoURL = undefined;
       state.stars = null;
-      state.name = null;
+      state.name = "";
     });
   },
 });
 
 interface repoState {
-  name: null | string;
+  name: string;
   repoURL: undefined | string;
   stars: null | number;
   statusRepo: null | string;

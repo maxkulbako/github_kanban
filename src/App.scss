@@ -24,10 +24,11 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
-}
-.issues_wrapper span {
-  font-weight: 600;
-  width: fit-content;
+
+  span {
+    font-weight: 600;
+    width: fit-content;
+  }
 }
 
 .fetching {
@@ -48,25 +49,27 @@
     transform: rotate(360deg) scale(1.5);
   }
 }
+
 .base_repo_info_wrapper {
   margin: 20px 10px;
-}
-.base_repo_info_wrapper .links_wrapper {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-weight: 700;
-  color: rgb(72, 153, 240);
-}
-.base_repo_info_wrapper .links_wrapper .stars_wrapper {
-  display: flex;
-  align-items: center;
-  color: rgb(0, 0, 0);
-}
-.base_repo_info_wrapper .links_wrapper .stars_wrapper svg {
-  width: 24px;
-  height: 24px;
-  color: rgb(236, 172, 34);
-}
 
-/*# sourceMappingURL=App.css.map */
+  .links_wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-weight: 700;
+    color: rgb(72, 153, 240);
+
+    .stars_wrapper {
+      display: flex;
+      align-items: center;
+      color: rgb(0, 0, 0);
+
+      svg {
+        width: 24px;
+        height: 24px;
+        color: rgb(236, 172, 34);
+      }
+    }
+  }
+}

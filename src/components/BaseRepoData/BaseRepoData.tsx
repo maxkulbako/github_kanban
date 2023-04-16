@@ -5,14 +5,46 @@ export const BaseRepoData = () => {
   const { repoURL, name, stars, statusRepo } = useSelector(
     (state: RootState) => state.repo
   );
+  const [org, repo] = name.split("/");
+
+  function formatStars(stars: number | null): string {
+    if (stars && stars >= 1000) {
+      const roundedStars = Math.round(stars / 1000) * 1000;
+      return `${roundedStars / 1000} k`;
+    }
+    return `${stars}`;
+  }
 
   return (
     <>
       {statusRepo === "error" && <div>Репозиторий отсутствует</div>}
       {statusRepo === "success" && (
-        <div>
-          <a href={repoURL}>{name}</a>
-          <p>{stars}</p>
+        <div className="base_repo_info_wrapper">
+          <div className="links_wrapper">
+            <a
+              href={`https://github.com/${org}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {org}
+            </a>
+            <div>{">"}</div>
+            <a href={repoURL} target="_blank" rel="noopener noreferrer">
+              {repo}
+            </a>
+            <div className="stars_wrapper">
+              <svg viewBox="0 0 24 24" id="star">
+                <g data-name="Layer 2">
+                  <path
+                    d="M17.56 21a1 1 0 0 1-.46-.11L12 18.22l-5.1 2.67a1 1 0 0 1-1.45-1.06l1-5.63-4.12-4a1 1 0 0 1-.25-1 1 1 0 0 1 .81-.68l5.7-.83 2.51-5.13a1 1 0 0 1 1.8 0l2.54 5.12 5.7.83a1 1 0 0 1 .81.68 1 1 0 0 1-.25 1l-4.12 4 1 5.63a1 1 0 0 1-.4 1 1 1 0 0 1-.62.18zM12 16.1a.92.92 0 0 1 .46.11l3.77 2-.72-4.21a1 1 0 0 1 .29-.89l3-2.93-4.2-.62a1 1 0 0 1-.71-.56L12 5.25 10.11 9a1 1 0 0 1-.75.54l-4.2.62 3 2.93a1 1 0 0 1 .29.89l-.72 4.16 3.77-2a.92.92 0 0 1 .5-.04z"
+                    data-name="star"
+                    fill="currentColor"
+                  ></path>
+                </g>
+              </svg>
+              <p>{formatStars(stars)}</p>
+            </div>
+          </div>
         </div>
       )}
     </>
