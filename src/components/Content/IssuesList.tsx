@@ -4,12 +4,12 @@ import { Droppable, Draggable, DroppableProvided } from "react-beautiful-dnd";
 
 export const IssuesList = ({ issues, title, droppable }: Props) => {
   return (
-    <div className="issues_wrapper">
+    <div className="issues_container">
       <span>{title}</span>
       <Droppable droppableId={droppable} type="PERSON">
         {(provided: DroppableProvided): JSX.Element => (
           <div
-            className="todo_container"
+            className="issues_list_wrapper"
             ref={provided.innerRef}
             {...provided.droppableProps}
           >

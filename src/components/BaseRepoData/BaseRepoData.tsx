@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
 export const BaseRepoData = () => {
-  const { repoURL, name, stars, statusRepo } = useSelector(
+  const { repoURL, ownerURL, name, stars, statusRepo } = useSelector(
     (state: RootState) => state.repo
   );
   const [org, repo] = name.split("/");
@@ -21,11 +21,7 @@ export const BaseRepoData = () => {
       {statusRepo === "success" && (
         <div className="base_repo_info_wrapper">
           <div className="links_wrapper">
-            <a
-              href={`https://github.com/${org}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={ownerURL} target="_blank" rel="noopener noreferrer">
               {org}
             </a>
             <div>{">"}</div>

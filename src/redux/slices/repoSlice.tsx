@@ -3,6 +3,7 @@ import axios from "axios";
 
 const initialState: repoState = {
   repoURL: undefined,
+  ownerURL: undefined,
   name: "",
   stars: null,
   statusRepo: null,
@@ -45,6 +46,7 @@ export const repoSlice = createSlice({
 interface repoState {
   name: string;
   repoURL: undefined | string;
+  ownerURL: undefined | string;
   stars: null | number;
   statusRepo: null | string;
 }

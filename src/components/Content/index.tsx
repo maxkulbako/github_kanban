@@ -52,7 +52,7 @@ export const Content = () => {
       {status === "error" && statusRepo !== "error" && <div>Try again</div>}
       {status === "empty" && <div>No issues</div>}
       {Object.keys(issues).length > 0 && (
-        <div className="issues_container">
+        <div className="kanban_container">
           <DragDropContext onDragEnd={onDragEnd}>
             <IssuesList issues={todoIssues} title="To Do" droppable="todoIds" />
             <IssuesList
