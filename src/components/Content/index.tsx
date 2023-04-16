@@ -1,13 +1,14 @@
 import { useCallback } from "react";
-import { IssuesList } from "./IssuesList";
-import { moveIssue } from "../../redux/slices/issuesSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   DragDropContext,
   DropResult,
   OnDragEndResponder,
 } from "react-beautiful-dnd";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../store";
+import { IssuesList } from "./IssuesList";
+import { moveIssue } from "../../store/slices/issuesSlice";
 
 export const Content = () => {
   const { issues, status, todoIds, inProgressIds, doneIds } = useSelector(

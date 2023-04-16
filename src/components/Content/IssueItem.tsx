@@ -1,5 +1,6 @@
-import { Issue } from "../../redux/slices/issuesSlice";
 import { Card } from "antd";
+
+import { Issue } from "../../store/slices/issuesSlice";
 
 export const IssueItem = ({
   title,

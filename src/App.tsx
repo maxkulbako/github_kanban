@@ -1,10 +1,9 @@
-import "./App.css";
-import { SearchBar } from "./components/SearchBar/SearchBar";
-
-import { BaseRepoData } from "./components/BaseRepoData/BaseRepoData";
-import { Content } from "./components/Content";
 import { useSelector } from "react-redux";
-import { RootState } from "./redux/store";
+import { RootState } from "./store";
+
+import "./App.css";
+
+import { SearchBar, BaseRepoData, Content } from "./components";
 
 function App() {
   const { status } = useSelector((state: RootState) => state.issues);

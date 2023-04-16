@@ -1,13 +1,13 @@
 import { Input } from "antd";
+import { useDispatch } from "react-redux";
+
 import {
   setSearchParams,
   getFromLocalStorage,
-} from "../../redux/slices/issuesSlice";
-
-import { fetchIssues } from "../../redux/slices/issuesSlice";
-import { fetchRepo } from "../../redux/slices/repoSlice";
-import { AppDispatch } from "../../redux/store";
-import { useDispatch } from "react-redux";
+} from "../../store/slices/issuesSlice";
+import { fetchIssues } from "../../store/slices/issuesSlice";
+import { fetchRepo } from "../../store/slices/repoSlice";
+import { AppDispatch } from "../../store";
 
 const { Search } = Input;
 
@@ -36,6 +36,10 @@ export const SearchBar = () => {
   };
 
   return (
-    <Search placeholder="Enter repo URL" onSearch={handleSearch} enterButton />
+    <Search
+      placeholder="Enter repo URL"
+      onSearch={handleSearch}
+      enterButton={"Load"}
+    />
   );
 };

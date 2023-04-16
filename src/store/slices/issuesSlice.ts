@@ -16,6 +16,7 @@ export const fetchIssues = createAsyncThunk(
     const { data } = await axios.get<Issue[]>(
       `https://api.github.com/repos/${repo}/issues`
     );
+
     const issues = data.reduce((acc, issue) => {
       if (issue.id) {
         acc[issue.id] = issue;
