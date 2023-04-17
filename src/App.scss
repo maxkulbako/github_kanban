@@ -44,6 +44,13 @@
   align-self: center;
 }
 
+.no_issues,
+.no_repo {
+  width: fit-content;
+  margin: 0 auto;
+  font-weight: 700;
+}
+
 @keyframes search {
   0% {
     transform: rotate(0deg);

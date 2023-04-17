@@ -18,7 +18,11 @@ export const BaseRepoData = () => {
 
   return (
     <>
-      {statusRepo === "error" && <div>Репозиторий отсутствует</div>}
+      {statusRepo === "error" && (
+        <div className="no_repo">
+          Couldn't find repository. Please check link and try again
+        </div>
+      )}
       {statusRepo === "success" && (
         <div className="base_repo_info_wrapper">
           <div className="links_wrapper">

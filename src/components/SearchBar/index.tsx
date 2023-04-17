@@ -29,7 +29,6 @@ export const SearchBar = () => {
       dispatch(setSearchParams(value));
       dispatch(getFromLocalStorage(value));
     } else {
-      console.log("fetch");
       dispatch(fetchIssues(searchParams));
       dispatch(setSearchParams(value));
     }

@@ -17,7 +17,7 @@ export const IssuesList = ({ issues, title, droppable }: Props) => {
               issues.map((repo, index) => (
                 <Draggable
                   key={repo.id}
-                  draggableId={repo.id ? repo.id.toString() : ""}
+                  draggableId={repo.id !== undefined ? repo.id.toString() : ""}
                   index={index}
                 >
                   {(provided) => (

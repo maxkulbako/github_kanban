@@ -3,7 +3,11 @@ import axios from "axios";
 
 const initialState: IssuesState = {
   repoURL: null,
-  issues: {},
+  issues: {
+    todoIds: {},
+    inProgressIds: {},
+    doneIds: {},
+  },
   todoIds: [],
   inProgressIds: [],
   doneIds: [],
@@ -12,17 +16,42 @@ const initialState: IssuesState = {
 
 export const fetchIssues = createAsyncThunk(
   "issues/fetchIssues",
-  async (repo: string) => {
-    const { data } = await axios.get<Issue[]>(
-      `https://api.github.com/repos/${repo}/issues`
-    );
+  async (repo: string): Promise<IssuesMap> => {
+    const [todoIds, inProgressIds, doneIds] = await Promise.all([
+      axios.get<Issue[]>(
+        `https://api.github.com/repos/${repo}/issues?state=open&sort=created&direction=desc`
+      ),
+      axios.get<Issue[]>(
+        `https://api.github.com/repos/${repo}/issues?state=open&assignee=*`
+      ),
+      axios.get<Issue[]>(
+        `https://api.github.com/repos/${repo}/issues?state=closed`
+      ),
+    ]);
 
-    const issues = data.reduce((acc, issue) => {
-      if (issue.id) {
-        acc[issue.id] = issue;
-      }
-      return acc;
-    }, {} as IssueMap);
+    const issues = {
+      todoIds: todoIds.data.reduce((acc, issue) => {
+        if (issue.id) {
+          acc[issue.id] = issue;
+        }
+        return acc;
+      }, {} as IssueMap),
+      inProgressIds: inProgressIds.data.reduce((acc, issue) => {
+        if (issue.id) {
+          acc[issue.id] = issue;
+        }
+        return acc;
+      }, {} as IssueMap),
+      doneIds: doneIds.data.reduce((acc, issue) => {
+        if (issue.id) {
+          acc[issue.id] = issue;
+        }
+        return acc;
+      }, {} as IssueMap),
+    };
+
+    console.log("fetch", issues);
+
     return issues;
   }
 );
@@ -48,10 +77,8 @@ export const issuesSlice = createSlice({
         state.inProgressIds = parsedState.inProgressIds;
         state.doneIds = parsedState.doneIds;
         state.status = parsedState.status;
-        console.log(state);
       }
     },
-
     moveIssue: (
       state,
       action: PayloadAction<{
@@ -67,28 +94,42 @@ export const issuesSlice = createSlice({
       const [removed] = sourceIds.splice(from, 1);
       destIds.splice(to, 0, removed);
 
+      const removedIssue = state.issues[sourceColumn][removed];
+      delete state.issues[sourceColumn][removed];
+      state.issues[destColumn][removed] = removedIssue;
+
       saveStateToLocalStorage(state);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchIssues.pending, (state) => {
       state.status = "loading";
-      state.issues = {};
+      state.issues = { todoIds: {}, inProgressIds: {}, doneIds: {} };
+      state.todoIds = [];
+      state.inProgressIds = [];
+      state.doneIds = [];
     });
     builder.addCase(fetchIssues.fulfilled, (state, { payload }) => {
-      if (Object.keys(payload).length > 0) {
+      console.log("fulfilled", payload);
+
+      if (
+        Object.keys(payload.doneIds).length > 0 ||
+        Object.keys(payload.inProgressIds).length > 0 ||
+        Object.keys(payload.todoIds).length > 0
+      ) {
         state.issues = payload;
-        state.todoIds = Object.keys(payload).map(Number);
-        state.inProgressIds = [];
-        state.doneIds = [];
+        state.todoIds = Object.keys(payload.todoIds).map(Number);
+        state.inProgressIds = Object.keys(payload.inProgressIds).map(Number);
+        state.doneIds = Object.keys(payload.doneIds).map(Number);
         state.status = "success";
       } else {
         state.status = "empty";
       }
     });
     builder.addCase(fetchIssues.rejected, (state) => {
+      console.log("case error");
       state.status = "error";
-      state.issues = {};
+      state.issues = { todoIds: {}, inProgressIds: {}, doneIds: {} };
       state.todoIds = [];
       state.inProgressIds = [];
       state.doneIds = [];
@@ -109,9 +150,15 @@ interface IssueMap {
   [key: number]: Issue;
 }
 
+interface IssuesMap {
+  todoIds: IssueMap;
+  inProgressIds: IssueMap;
+  doneIds: IssueMap;
+}
+
 interface IssuesState {
   repoURL: null | string;
-  issues: IssueMap;
+  issues: IssuesMap;
   todoIds: number[];
   inProgressIds: number[];
   doneIds: number[];
