@@ -1,20 +1,23 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
   DragDropContext,
-  DropResult,
-  OnDragEndResponder,
+  type DropResult,
+  type OnDragEndResponder,
 } from "react-beautiful-dnd";
-import { AppDispatch, RootState } from "../../store";
+import { type AppDispatch, type RootState } from "../../store";
 import { IssuesList } from "./IssuesList";
 import { moveIssue } from "../../store/slices/issuesSlice";
 
-export const Content = () => {
+export const Content = (): JSX.Element => {
   const { issues, status, todoIds, inProgressIds, doneIds } = useSelector(
     (state: RootState) => state.issues
   );
   const { statusRepo } = useSelector((state: RootState) => state.repo);
+
+  console.log(issues);
+  console.log(todoIds);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -23,12 +26,11 @@ export const Content = () => {
   const doneIssues = doneIds.map((id) => issues.doneIds[id]);
 
   const onDragEnd: OnDragEndResponder = useCallback((result: DropResult) => {
-    console.log(result);
     const { source, destination } = result;
-    if (!destination) {
+    if (destination == null) {
       return;
     }
-    console.log(source.droppableId, destination.droppableId);
+
     if (
       source.droppableId !== destination.droppableId ||
       source.index !== destination.index
@@ -54,7 +56,7 @@ export const Content = () => {
     <>
       {status === "error" && statusRepo !== "error" && (
         <div className="no_repo">
-          Couldn't find repositories. Please check link and try again
+          Could not find repositories. Please check link and try again`
         </div>
       )}
       {status === "empty" && <div className="no_issues">No issues...</div>}

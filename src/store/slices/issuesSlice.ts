@@ -50,8 +50,6 @@ export const fetchIssues = createAsyncThunk(
       }, {} as IssueMap),
     };
 
-    console.log("fetch", issues);
-
     return issues;
   }
 );
@@ -110,8 +108,6 @@ export const issuesSlice = createSlice({
       state.doneIds = [];
     });
     builder.addCase(fetchIssues.fulfilled, (state, { payload }) => {
-      console.log("fulfilled", payload);
-
       if (
         Object.keys(payload.doneIds).length > 0 ||
         Object.keys(payload.inProgressIds).length > 0 ||
@@ -127,7 +123,6 @@ export const issuesSlice = createSlice({
       }
     });
     builder.addCase(fetchIssues.rejected, (state) => {
-      console.log("case error");
       state.status = "error";
       state.issues = { todoIds: {}, inProgressIds: {}, doneIds: {} };
       state.todoIds = [];

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import { RootState } from "../../store";
+import { type RootState } from "../../store";
 
 export const BaseRepoData = () => {
   const { repoURL, ownerURL, name, stars, statusRepo } = useSelector(
